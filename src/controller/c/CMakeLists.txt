@@ -88,6 +88,7 @@ add_library(webots-controller::webots_controller ALIAS webots_controller)
 
 if(WIN32)
   set_target_properties(webots_controller PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  target_link_libraries(webots_controller PRIVATE ws2_32)
 endif()
 
 target_include_directories(webots_controller
