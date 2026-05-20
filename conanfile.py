@@ -49,4 +49,4 @@ class WebotsControllerConan(ConanFile):
         copy(self, "LICENSE", src=self.source_folder, dst=f"{self.package_folder}/licenses")
 
     def package_info(self):
-        self.cpp_info.libs = ["webots_controller"]
+        self.cpp_info.libs = ["webots_cpp_controller", "webots_controller"]
