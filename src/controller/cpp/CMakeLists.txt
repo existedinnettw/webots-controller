@@ -44,9 +44,9 @@ if(WIN32)
 endif()
 
 target_include_directories(webots_cpp_controller
-  PRIVATE
-    ${CMAKE_SOURCE_DIR}/include/controller/c
-    ${CMAKE_SOURCE_DIR}/include/controller/cpp
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/controller/cpp>
+    $<INSTALL_INTERFACE:include/controller/cpp>
 )
 
 target_link_libraries(webots_cpp_controller
@@ -55,3 +55,4 @@ target_link_libraries(webots_cpp_controller
 )
 
 install(TARGETS webots_cpp_controller)
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/controller/cpp/webots" DESTINATION "include/controller/cpp")

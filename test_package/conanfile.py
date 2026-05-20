@@ -21,8 +21,10 @@ class TestPackageConan(ConanFile):
         cmake.build()
 
     def test(self):
+        # check if RUNTIME_DEPENDENCY_SET work
         cmake = CMake(self)
         cmake.install()
         if can_run(self):
             exe = os.path.join(self.source_folder, "bin", "test_package")
             self.run(exe, env="conanrun")
+

@@ -91,14 +91,15 @@ if(WIN32)
 endif()
 
 target_include_directories(webots_controller
+  PUBLIC
+    $<BUILD_INTERFACE:${WEBOTS_HEADERS_ROOT}>
+    $<INSTALL_INTERFACE:include/controller/c>
   PRIVATE
-    ${WEBOTS_HEADERS_ROOT}
-    ${WEBOTS_INCLUDE_ROOT}
     ${WEBOTS_STB_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_compile_definitions(webots_controller PRIVATE LIBCONTROLLER_VERSION="custom")
+target_compile_definitions(webots_controller PRIVATE LIBCONTROLLER_VERSION="R2025a")
 if(WEBOTS_CONTROLLER_NO_PLUGINS)
   target_compile_definitions(webots_controller PUBLIC WEBOTS_CONTROLLER_NO_PLUGINS=1)
 endif()
@@ -114,3 +115,4 @@ if(UNIX)
 endif()
 
 install(TARGETS webots_controller)
+install(DIRECTORY "${WEBOTS_HEADERS_ROOT}/webots" DESTINATION "include/controller/c")

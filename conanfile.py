@@ -5,7 +5,7 @@ from conan.tools.files import copy
 
 class WebotsControllerConan(ConanFile):
     name = "webots-controller"
-    version = "0.1.0"
+    version = "r2025a"
     package_type = "library"
 
     settings = "os", "arch", "compiler", "build_type"
@@ -20,7 +20,7 @@ class WebotsControllerConan(ConanFile):
         "no_plugins": True,
     }
 
-    exports_sources = "CMakeLists.txt", "src/*", "LICENSE", "README.md"
+    exports_sources = "CMakeLists.txt", "src/*", "include/*", "LICENSE", "README.md"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -50,3 +50,4 @@ class WebotsControllerConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["webots_cpp_controller", "webots_controller"]
+        self.cpp_info.includedirs = ["include/controller/cpp", "include/controller/c"]

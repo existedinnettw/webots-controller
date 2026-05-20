@@ -69,5 +69,5 @@ Testing/
 .cache/
 
 # user
-/CMakeUserPresets.json
-
+**/CMakeUserPresets.json
+/test_package/bin
