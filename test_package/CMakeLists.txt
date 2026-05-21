@@ -20,38 +20,35 @@ if(WIN32 AND DEFINED ENV{MINGW_HOME})
   list(APPEND _extra_runtime_dirs "$ENV{MINGW_HOME}/bin")
 endif()
 
-# Webots controllers rely on seeing shared deps in the same directory as the executable.
-install(TARGETS test_package
-  RUNTIME_DEPENDENCY_SET test_package_runtime_deps
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+# Webots controllers rely on seeing shared deps in the same directory as the
+# executable. Destination therefore change to "."
+install(
+  TARGETS test_package RUNTIME_DEPENDENCY_SET test_package_runtime_deps
+  RUNTIME DESTINATION .
+  LIBRARY DESTINATION .
+  ARCHIVE DESTINATION .)
 
 if(WIN32)
-  set(_runtime_dep_pre_excludes
-    "^api-ms-win-.*"
-    "^ext-ms-.*")
-  set(_runtime_dep_post_excludes
-    ".*/system32/.*"
-    ".*/Windows/.*"
-    ".*/SysWOW64/.*")
+  set(_runtime_dep_pre_excludes "^api-ms-win-.*" "^ext-ms-.*")
+  set(_runtime_dep_post_excludes ".*/system32/.*" ".*/Windows/.*"
+                                 ".*/SysWOW64/.*")
 else()
   set(_runtime_dep_pre_excludes
-    [[libc\.so\..*]]
-    [[libgcc_s\.so\..*]]
-    [[libm\.so\..*]]
-    [[libstdc\+\+\.so\..*]]
-    [[ld-linux-x86-64\.so\..*]])
-  set(_runtime_dep_post_excludes
-    [[^/lib.*]]
-    [[^/usr/lib.*]])
+      [[libc\.so\..*]] [[libgcc_s\.so\..*]] [[libm\.so\..*]]
+      [[libstdc\+\+\.so\..*]] [[ld-linux-x86-64\.so\..*]])
+  set(_runtime_dep_post_excludes [[^/lib.*]] [[^/usr/lib.*]])
 endif()
 
 install(
-  RUNTIME_DEPENDENCY_SET test_package_runtime_deps
-  PRE_EXCLUDE_REGEXES ${_runtime_dep_pre_excludes}
-  POST_EXCLUDE_REGEXES ${_runtime_dep_post_excludes}
+  RUNTIME_DEPENDENCY_SET
+  test_package_runtime_deps
+  PRE_EXCLUDE_REGEXES
+  ${_runtime_dep_pre_excludes}
+  POST_EXCLUDE_REGEXES
+  ${_runtime_dep_post_excludes}
   DIRECTORIES
-    ${CONAN_RUNTIME_LIB_DIRS}
-    ${CMAKE_SYSROOT}/lib
-    ${_extra_runtime_dirs})
+  ${CONAN_RUNTIME_LIB_DIRS}
+  ${CMAKE_SYSROOT}/lib
+  ${_extra_runtime_dirs}
+  DESTINATION
+  .)

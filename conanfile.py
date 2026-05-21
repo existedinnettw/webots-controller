@@ -1,7 +1,7 @@
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy
-
+from conan.tools.microsoft import is_msvc
 
 class WebotsControllerConan(ConanFile):
     name = "webots-controller"
@@ -26,6 +26,18 @@ class WebotsControllerConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+    def configure(self):
+        # plugins use dlopen therefore ABI need to be match (same compiler type and compiler version)
+        if self.options.get_safe("no_plugins", True):
+            return
+
+        if self.settings.os == "Windows" and is_msvc(self):
+            raise ValueError("Official windows webots is build under msys2 mingw(gcc), rather than MSVC.")
+
+    def requirements(self):
+        # self.requires("stb/cci.20240531")
+        pass
+
     def layout(self):
         cmake_layout(self)
 
@@ -34,7 +46,7 @@ class WebotsControllerConan(ConanFile):
         deps.generate()
 
         tc = CMakeToolchain(self)
-        tc.variables["BUILD_SHARED_LIBS"] = bool(self.options.shared)
+        # tc.variables["BUILD_SHARED_LIBS"] = bool(self.options.shared)
         tc.variables["WEBOTS_CONTROLLER_NO_PLUGINS"] = bool(self.options.no_plugins)
         tc.generate()
 
@@ -50,4 +62,4 @@ class WebotsControllerConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["webots_cpp_controller", "webots_controller"]
-        self.cpp_info.includedirs = ["include/controller/cpp", "include/controller/c"]
+        self.cpp_info.includedirs = ["include", "include/controller/cpp", "include/controller/c"]

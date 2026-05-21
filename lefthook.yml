@@ -1,0 +1,13 @@
+pre-commit:
+  commands:
+    cmake-format:
+      glob: "{**/CMakeLists.txt,**/*.cmake}"
+      run: uvx --with pyyaml --from cmakelang cmake-format -i {staged_files}
+      stage_fixed: true
+    # clang-format:
+    #   run: uvx run-clang-format -i ./src ./include ./tests
+    #   stage_fixed: true
+# post-checkout:
+#   commands:
+#     inkr-skill-sync:
+#       run: uvx --from git+https://github.com/existedinnettw/inkr-harness-tools.git inkr-skill-sync .local .agents --recursive

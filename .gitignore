@@ -70,4 +70,6 @@ Testing/
 
 # user
 **/CMakeUserPresets.json
-/test_package/bin
+/test_package/test_package
+*.exe
+_tmp_install
