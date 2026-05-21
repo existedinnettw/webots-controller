@@ -11,6 +11,7 @@ By default, headers are read from `./include/controller/c` and stb from `./src/s
 ## Example
 
 ```bash
+git submodule update --init --recursive 
 conan create . \
   -o webots-controller/*:no_plugins=True
 ```

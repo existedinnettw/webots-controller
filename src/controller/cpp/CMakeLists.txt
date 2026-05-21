@@ -41,6 +41,8 @@ file(GLOB_RECURSE WEBOTS_CONTROLLER_CPP_PUBLIC_HEADERS CONFIGURE_DEPENDS
 add_library(webots_cpp_controller ${WEBOTS_CONTROLLER_CPP_SOURCES})
 add_library(webots-controller::webots_cpp_controller ALIAS
             webots_cpp_controller)
+add_library(webots-controller::CppController ALIAS webots_cpp_controller)
+add_library(webots-controller::webots-controller ALIAS webots_cpp_controller)
 
 target_sources(
   webots_cpp_controller
@@ -67,5 +69,9 @@ target_link_libraries(webots_cpp_controller PUBLIC webots_controller)
 
 install(
   TARGETS webots_cpp_controller
+  RUNTIME DESTINATION "bin"
+  LIBRARY DESTINATION "lib"
+  ARCHIVE DESTINATION "lib"
           # `include "../../c/webots/types.h"` in `Robot.hpp`
-          FILE_SET webots_cpp_headers DESTINATION "include/controller/cpp")
+          FILE_SET webots_cpp_headers
+          DESTINATION "include/controller/cpp")

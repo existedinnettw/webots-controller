@@ -27,4 +27,5 @@ class TestPackageConan(ConanFile):
         if can_run(self):
             exe = os.path.join(self.source_folder, "test_package")
             self.run(exe, env="conanrun")
-
+            exe = os.path.join(self.source_folder, "test_package_c")
+            self.run(exe, env="conanrun")

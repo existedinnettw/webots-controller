@@ -85,6 +85,7 @@ endif()
 # cmake.
 add_library(webots_controller ${WEBOTS_CONTROLLER_C_SOURCES})
 add_library(webots-controller::webots_controller ALIAS webots_controller)
+add_library(webots-controller::Controller ALIAS webots_controller)
 
 target_sources(
   webots_controller
@@ -136,7 +137,11 @@ if(UNIX)
 endif()
 
 install(
-  TARGETS webots_controller FILE_SET webots_c_headers
-  DESTINATION "include/controller/c"
-  FILE_SET webots_plugin_headers
-  DESTINATION "include")
+  TARGETS webots_controller
+  RUNTIME DESTINATION "bin"
+  LIBRARY DESTINATION "lib"
+  ARCHIVE DESTINATION "lib"
+          FILE_SET webots_c_headers
+          DESTINATION "include/controller/c"
+          FILE_SET webots_plugin_headers
+          DESTINATION "include")

@@ -61,5 +61,17 @@ class WebotsControllerConan(ConanFile):
         copy(self, "LICENSE", src=self.source_folder, dst=f"{self.package_folder}/licenses")
 
     def package_info(self):
-        self.cpp_info.libs = ["webots_cpp_controller", "webots_controller"]
-        self.cpp_info.includedirs = ["include", "include/controller/cpp", "include/controller/c"]
+        self.cpp_info.set_property("cmake_file_name", "webots-controller")
+        self.cpp_info.set_property("cmake_target_name", "webots-controller::webots-controller")
+        self.cpp_info.requires = ["CppController"]
+
+        controller = self.cpp_info.components["Controller"]
+        controller.libs = ["webots_controller"]
+        controller.includedirs = ["include", "include/controller/c"]
+        controller.set_property("cmake_target_name", "webots-controller::Controller")
+
+        cpp_controller = self.cpp_info.components["CppController"]
+        cpp_controller.libs = ["webots_cpp_controller"]
+        cpp_controller.includedirs = ["include", "include/controller/cpp", "include/controller/c"]
+        cpp_controller.requires = ["Controller"]
+        cpp_controller.set_property("cmake_target_name", "webots-controller::CppController")
