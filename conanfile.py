@@ -20,7 +20,7 @@ class WebotsControllerConan(ConanFile):
         "no_plugins": True,
     }
 
-    exports_sources = "CMakeLists.txt", "src/*", "include/*", "LICENSE", "README.md"
+    exports_sources = "CMakeLists.txt", "src/*", "include/*", "patches/*.patch", "LICENSE", "README.md"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -36,7 +36,8 @@ class WebotsControllerConan(ConanFile):
 
     def requirements(self):
         # self.requires("stb/cci.20240531")
-        pass
+        if self.settings.os == "Windows" and self.settings.compiler != "gcc":
+            self.requires("dirent/1.24")
 
     def layout(self):
         cmake_layout(self)

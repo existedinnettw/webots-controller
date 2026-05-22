@@ -81,6 +81,30 @@ else()
   list(APPEND WEBOTS_CONTROLLER_C_SOURCES ${WEBOTS_CONTROLLER_C_PLUGIN_SOURCES})
 endif()
 
+if(MSVC)
+  find_package(Git REQUIRED)
+  set(WEBOTS_CONTROLLER_MSVC_SOURCE_DIR
+      "${CMAKE_CURRENT_BINARY_DIR}/msvc-patched-source")
+  file(REMOVE_RECURSE "${WEBOTS_CONTROLLER_MSVC_SOURCE_DIR}")
+  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/"
+       DESTINATION "${WEBOTS_CONTROLLER_MSVC_SOURCE_DIR}")
+  file(RELATIVE_PATH WEBOTS_CONTROLLER_MSVC_SOURCE_RELATIVE_DIR
+       "${CMAKE_SOURCE_DIR}" "${WEBOTS_CONTROLLER_MSVC_SOURCE_DIR}")
+  execute_process(
+    COMMAND
+      "${GIT_EXECUTABLE}" apply
+      "--directory=${WEBOTS_CONTROLLER_MSVC_SOURCE_RELATIVE_DIR}"
+      "${CMAKE_SOURCE_DIR}/patches/msvc-controller-c.patch"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    RESULT_VARIABLE WEBOTS_CONTROLLER_MSVC_PATCH_RESULT)
+  if(NOT WEBOTS_CONTROLLER_MSVC_PATCH_RESULT EQUAL 0)
+    message(FATAL_ERROR "Failed to apply MSVC controller C source patch")
+  endif()
+
+  list(TRANSFORM WEBOTS_CONTROLLER_C_SOURCES
+       PREPEND "${WEBOTS_CONTROLLER_MSVC_SOURCE_DIR}/")
+endif()
+
 # add_library without STATIC/SHARED follows BUILD_SHARED_LIBS automatically in
 # cmake.
 add_library(webots_controller ${WEBOTS_CONTROLLER_C_SOURCES})
@@ -112,12 +136,23 @@ if(WIN32)
   target_link_libraries(webots_controller PRIVATE ws2_32)
 endif()
 
+if(MSVC)
+  target_sources(webots_controller
+                 PRIVATE "${libunistd_SOURCE_DIR}/unistd/clock_gettime.cpp")
+  target_link_libraries(webots_controller
+                        PRIVATE webots_controller_msvc_unix_headers)
+  target_compile_definitions(webots_controller PRIVATE _USE_MATH_DEFINES
+                                                       O_TEXT=_O_TEXT)
+  target_compile_options(webots_controller PRIVATE /utf-8)
+endif()
+
 target_include_directories(
   webots_controller
   PUBLIC $<BUILD_INTERFACE:${WEBOTS_INCLUDE_ROOT}>
          $<BUILD_INTERFACE:${WEBOTS_HEADERS_ROOT}> $<INSTALL_INTERFACE:include>
          $<INSTALL_INTERFACE:include/controller/c>
-  PRIVATE ${WEBOTS_STB_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+  PRIVATE ${WEBOTS_STB_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+          ${WEBOTS_CONTROLLER_MSVC_SOURCE_DIR})
 
 target_compile_definitions(webots_controller
                            PRIVATE LIBCONTROLLER_VERSION="R2025a")

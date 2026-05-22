@@ -7,6 +7,8 @@ pre-commit:
     # clang-format:
     #   run: uvx run-clang-format -i ./src ./include ./tests
     #   stage_fixed: true
+    gitleaks:
+      run: gitleaks protect --staged --redact --no-banner
 # post-checkout:
 #   commands:
 #     inkr-skill-sync:
