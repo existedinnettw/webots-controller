@@ -154,8 +154,8 @@ target_include_directories(
   PRIVATE ${WEBOTS_STB_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
           ${WEBOTS_CONTROLLER_MSVC_SOURCE_DIR})
 
-target_compile_definitions(webots_controller
-                           PRIVATE LIBCONTROLLER_VERSION="R2025a")
+target_compile_definitions(
+  webots_controller PRIVATE LIBCONTROLLER_VERSION="${LIBCONTROLLER_VERSION}")
 if(WEBOTS_CONTROLLER_NO_PLUGINS)
   target_compile_definitions(webots_controller
                              PUBLIC WEBOTS_CONTROLLER_NO_PLUGINS=1)

@@ -49,6 +49,10 @@ class WebotsControllerConan(ConanFile):
         tc = CMakeToolchain(self)
         # tc.variables["BUILD_SHARED_LIBS"] = bool(self.options.shared)
         tc.variables["WEBOTS_CONTROLLER_NO_PLUGINS"] = bool(self.options.no_plugins)
+        libcontroller_version = str(self.version)
+        if libcontroller_version.startswith("r"):
+            libcontroller_version = f"R{libcontroller_version[1:]}"
+        tc.variables["LIBCONTROLLER_VERSION"] = libcontroller_version
         tc.generate()
 
     def build(self):
